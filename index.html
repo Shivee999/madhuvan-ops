@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Madhuvan">
+<meta name="theme-color" content="#14100E">
+<title>Madhuvan Palace · Ops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14100E; --ink2:#1E1814; --ink3:#2A221C; --line:#3A2F27;
+  --silk:#C9A227; --brass:#8F6E1E; --cream:#F3E9D2; --mist:#A99B87;
+  --occ:#C9A227; --vac:#3A2F27; --dirty:#B4562E; --ooo:#5B5B5B; --blocked:#4E6B8C;
+  --ok:#5F9C6B; --warn:#D28B2C; --bad:#C24A3A;
+  --disp:"Cormorant Garamond",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ink);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 90px);max-width:1180px;margin:0 auto}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--silk);outline-offset:2px}
+
+/* header */
+header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.brand h1{font-family:var(--disp);font-weight:600;font-size:30px;letter-spacing:.01em;line-height:1}
+.brand h1 em{font-style:italic;color:var(--silk)}
+.brand small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist);margin-top:6px}
+.src{text-align:right;font-family:var(--mono);font-size:10px;color:var(--mist);letter-spacing:.06em}
+.src b{display:inline-flex;align-items:center;gap:6px;color:var(--cream);font-weight:500}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 3px rgba(210,139,44,.18)}
+.dot.live{background:var(--ok);box-shadow:0 0 0 3px rgba(95,156,107,.18)}
+.dot.bad{background:var(--bad);box-shadow:0 0 0 3px rgba(194,74,58,.18)}
+
+.note{font-family:var(--mono);font-size:10px;color:var(--mist);line-height:1.5;margin-top:12px;border-left:2px solid var(--brass);padding-left:10px}
+.note:empty{display:none}
+.empty{background:var(--ink2);border:1px dashed var(--line);padding:16px;font-family:var(--mono);font-size:11px;color:var(--mist);text-align:center}
+/* today strip */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
+.strip>div{background:var(--ink2);padding:12px 12px 10px}
+.strip .k{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist)}
+.strip .v{font-family:var(--disp);font-size:34px;font-weight:600;line-height:1;margin-top:6px}
+.strip .v span{font-family:var(--mono);font-size:11px;color:var(--mist);margin-left:4px;font-weight:400}
+.strip .sub{font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:4px}
+
+/* section */
+section{margin-top:26px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.sh h2{font-family:var(--disp);font-size:22px;font-weight:600;letter-spacing:.01em}
+.sh h2 i{font-style:normal;color:var(--silk);margin-right:6px}
+.sh .m{font-family:var(--mono);font-size:10px;color:var(--mist);letter-spacing:.08em}
+
+/* ghat: occupancy stack */
+.ghat{display:flex;height:22px;border:1px solid var(--line);overflow:hidden}
+.ghat i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--mist)}
+.legend i{display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:-1px}
+
+/* rooms grid */
+.floors{margin-top:14px;display:grid;gap:10px}
+.floor{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:start}
+.floor .fl{font-family:var(--disp);font-size:20px;color:var(--mist);line-height:36px}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:5px}
+.room{height:36px;border:1px solid var(--line);background:var(--ink2);font-family:var(--mono);font-size:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;position:relative;text-align:center}
+.room b{font-weight:500}
+.room s{text-decoration:none;font-size:8px;color:var(--mist);letter-spacing:.04em}
+.room.occ{background:var(--occ);color:var(--ink);border-color:var(--silk)}
+.room.occ s{color:#5c4a12}
+.room.dirty{background:var(--dirty);color:var(--cream);border-color:var(--dirty)}
+.room.ooo{background:var(--ooo);color:#ddd;border-color:var(--ooo)}
+.room.blocked{background:var(--blocked);color:#e6eef8;border-color:var(--blocked)}
+.room.dep::after,.room.arr::after{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%}
+.room.arr::after{background:var(--ok)}
+.room.dep::after{background:var(--bad)}
+
+/* lists */
+.list{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.row{background:var(--ink2);padding:11px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+.row .t{font-weight:500;font-size:14px}
+.row .d{font-family:var(--mono);font-size:10px;color:var(--mist);letter-spacing:.04em;grid-column:1/-1}
+.row .amt{font-family:var(--mono);font-size:13px;text-align:right}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--line);color:var(--mist);margin-left:6px;vertical-align:1px}
+.tag.ok{color:var(--ok);border-color:var(--ok)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.tag.bad{color:var(--bad);border-color:var(--bad)}
+.tag.silk{color:var(--silk);border-color:var(--brass)}
+
+/* banquet timeline */
+.bq{display:grid;gap:8px}
+.bqd{display:grid;grid-template-columns:54px 1fr;gap:10px;align-items:stretch}
+.bqd .dt{font-family:var(--disp);font-size:18px;line-height:1.05;color:var(--mist)}
+.bqd .dt b{display:block;color:var(--cream);font-size:24px;font-weight:600}
+.bqd .ev{background:var(--ink2);border:1px solid var(--line);border-left:3px solid var(--silk);padding:10px 12px}
+.bqd .ev.tent{border-left-color:var(--warn);border-left-style:dashed}
+.bqd .ev .t{font-weight:500}
+.bqd .ev .d{font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:3px}
+.bqd .ev .amt{font-family:var(--mono);font-size:12px;margin-top:6px}
+
+/* pos twin cards */
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--ink2);border:1px solid var(--line);padding:12px}
+.card h3{font-family:var(--disp);font-size:20px;font-weight:600}
+.card .big{font-family:var(--disp);font-size:36px;line-height:1;margin-top:6px}
+.card .row2{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:8px}
+.card ul{list-style:none;margin-top:10px;border-top:1px solid var(--line)}
+.card li{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.card li span:last-child{font-family:var(--mono);color:var(--mist)}
+.spark{display:flex;align-items:flex-end;gap:2px;height:36px;margin-top:10px}
+.spark i{flex:1;background:var(--brass);min-height:2px}
+.spark i.now{background:var(--silk)}
+
+/* revenue */
+.rev{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.rev>div{background:var(--ink2);padding:12px}
+.rev .k{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist)}
+.rev .v{font-family:var(--disp);font-size:26px;margin-top:6px}
+.rev .c{font-family:var(--mono);font-size:10px;margin-top:3px}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(20,16,14,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 16px calc(env(safe-area-inset-bottom) + 10px);display:flex;gap:8px;justify-content:center}
+.bar button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;border:1px solid var(--line);color:var(--mist)}
+.bar button.pri{border-color:var(--brass);color:var(--silk)}
+
+/* setup drawer */
+dialog{background:var(--ink2);color:var(--cream);border:1px solid var(--line);width:min(560px,92vw);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h3{font-family:var(--disp);font-size:22px}
+dialog p{font-size:12px;color:var(--mist);margin-top:8px;line-height:1.5}
+dialog label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist);margin-top:14px}
+dialog input{width:100%;margin-top:6px;background:var(--ink);border:1px solid var(--line);color:var(--cream);padding:9px 10px;font-family:var(--mono);font-size:12px}
+dialog .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+dialog .acts button{border:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+dialog .acts .pri{border-color:var(--brass);color:var(--silk)}
+pre{background:var(--ink);border:1px solid var(--line);padding:10px;font-family:var(--mono);font-size:10px;color:var(--mist);overflow:auto;margin-top:8px;max-height:220px}
+
+@media (max-width:640px){
+  .strip{grid-template-columns:repeat(2,1fr)}
+  .rev{grid-template-columns:repeat(2,1fr)}
+  .twin{grid-template-columns:1fr}
+  .brand h1{font-size:26px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .room,.ghat i{transition:background .25s}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>Madhuvan <em>Palace</em></h1>
+    <small>Varanasi · owner view</small>
+  </div>
+  <div class="src">
+    <b><span class="dot" id="dot"></span><span id="srcLabel">Sample data</span></b><br>
+    <span id="asOf">—</span>
+  </div>
+</header>
+
+<p id="note" class="note"></p>
+<div class="strip" id="strip"></div>
+
+<section>
+  <div class="sh"><h2><i>▪</i>Rooms</h2><span class="m" id="roomsMeta"></span></div>
+  <div class="ghat" id="ghat"></div>
+  <div class="legend">
+    <span><i style="background:var(--occ)"></i>Occupied</span>
+    <span><i style="background:var(--vac)"></i>Vacant clean</span>
+    <span><i style="background:var(--dirty)"></i>Vacant dirty</span>
+    <span><i style="background:var(--blocked)"></i>Blocked</span>
+    <span><i style="background:var(--ooo)"></i>Out of order</span>
+    <span><i style="background:var(--ok);border-radius:50%"></i>Arriving</span>
+    <span><i style="background:var(--bad);border-radius:50%"></i>Departing</span>
+  </div>
+  <div class="floors" id="floors"></div>
+</section>
+
+<section>
+  <div class="sh"><h2><i>▪</i>Arrivals &amp; departures</h2><span class="m" id="adMeta"></span></div>
+  <div class="list" id="adList"></div>
+</section>
+
+<section>
+  <div class="sh"><h2><i>▪</i>Banquets</h2><span class="m" id="bqMeta"></span></div>
+  <div class="bq" id="bq"></div>
+</section>
+
+<section>
+  <div class="sh"><h2><i>▪</i>Restaurant &amp; bar</h2><span class="m" id="posMeta"></span></div>
+  <div class="twin" id="pos"></div>
+</section>
+
+<section>
+  <div class="sh"><h2><i>▪</i>Revenue today</h2><span class="m">vs same day last week</span></div>
+  <div class="rev" id="rev"></div>
+</section>
+
+<div class="bar">
+  <button id="btnRefresh">Refresh</button>
+  <button class="pri" id="btnSetup">Data source</button>
+</div>
+
+<dialog id="dlg">
+  <h3>Connect IDS Next</h3>
+  <p>Paste the URL of an n8n webhook (or any endpoint) that returns the JSON below. The dashboard polls it every 5 minutes. Leave blank to keep sample data.</p>
+  <label>Feed URL</label>
+  <input id="feedUrl" placeholder="https://bettercallwrld.app.n8n.cloud/webhook/madhuvan-ops">
+  <label>Header token (optional)</label>
+  <input id="feedTok" placeholder="Bearer …">
+  <label>Expected JSON shape</label>
+  <pre id="shape"></pre>
+  <div class="acts">
+    <button id="dlgClose">Close</button>
+    <button class="pri" id="dlgSave">Save &amp; load</button>
+  </div>
+</dialog>
+
+<script>
+/* ---------- data contract ---------- */
+const SAMPLE = {
+  hotel:"Hotel Madhuvan Palace, Varanasi",
+  asOf:"2026-08-16T09:05:00+05:30",
+  source:"FortuneNext 7.0 · counters (manual)",
+  note:"Counters read from FortuneNext 7.0 (client 7237, DB NEXT65) at 09:05 on 16 Aug 2026. Guest names, banquets, POS and revenue populate once the bridge is running.",
+  rooms:{
+    total:26,
+    floors:[
+      {name:"In", rooms:Array.from({length:11},(_,i)=>({no:"—",status:"occ",guest:"in-house"}))},
+      {name:"Sell", rooms:Array.from({length:15},(_,i)=>({no:"—",status:"vac",guest:"to sell"}))}
+    ]
+  },
+  counters:{expectedArrivals:3,expectedDepartures:5,checkinRooms:1,walkinRooms:1,roomsToSell:15,inhouseRooms:11,inhouseGuests:18,complaints:0,foreignRooms:0,foreignGuests:0,extraAdult:0,extraChild:0,guestBlock:0},
+  arrivals:[{guest:"3 expected arrivals",room:"—",pax:0,nights:0,src:"FortuneNext",eta:"—",rate:0}],
+  departures:[{guest:"5 expected departures",room:"—",bal:0}],
+  banquets:[],
+  pos:{
+    restaurant:{name:"Restaurant",covers:0,sale:0,openBills:0,avgCheck:0,top:[],hourly:Array(24).fill(0)},
+    bar:{name:"Bar",covers:0,sale:0,openBills:0,avgCheck:0,top:[],hourly:Array(24).fill(0)}
+  },
+  revenue:{rooms:{today:0,prev:0},fnb:{today:0,prev:0},banquet:{today:0,prev:0},other:{today:0,prev:0}}
+};
+
+const SHAPE = `{
+  "hotel": "string", "asOf": "ISO datetime", "source": "fortunenext|fx",
+  "rooms": { "total": 36, "floors": [ { "name": "1",
+      "rooms": [ { "no":"201","status":"occ|vac|dirty|blocked|ooo",
+                   "guest":"name","arr":true,"dep":true } ] } ] },
+  "arrivals":   [ { "guest","room","pax","nights","src","eta","rate" } ],
+  "departures": [ { "guest","room","bal" } ],
+  "banquets":   [ { "date","hall","event","pax","time",
+                    "status":"confirmed|tentative","value","menu" } ],
+  "pos": { "restaurant": { "covers","sale","openBills","avgCheck",
+                           "top":[["item",qty]], "hourly":[24 numbers] },
+           "bar": { ...same } },
+  "revenue": { "rooms":{"today","prev"}, "fnb":{...},
+               "banquet":{...}, "other":{...} }
+}`;
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const inr=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const pct=(a,b)=>b?Math.round((a-b)/b*100):null;
+const store={
+  get(k){try{return localStorage.getItem(k)}catch{return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch{}}
+};
+
+/* ---------- render ---------- */
+function render(d){
+  const allRooms=d.rooms.floors.flatMap(f=>f.rooms);
+  const cnt=s=>allRooms.filter(r=>r.status===s).length;
+  const occ=cnt("occ"), tot=d.rooms.total||allRooms.length;
+  const arr=d.counters?d.counters.expectedArrivals:d.arrivals.length, dep=d.counters?d.counters.expectedDepartures:d.departures.length;
+  const revT=Object.values(d.revenue).reduce((a,x)=>a+x.today,0);
+
+  $("#dot").className="dot"+(/live|feed|bridge/i.test(d.source)?" live":"");
+  $("#srcLabel").textContent=d.source;
+  $("#note").textContent=d.note||"";
+  $("#asOf").textContent="as of "+new Date(d.asOf).toLocaleString("en-IN",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"short"});
+
+  $("#strip").innerHTML=`
+    <div><div class="k">Occupancy</div><div class="v">${Math.round(occ/tot*100)}<span>%</span></div><div class="sub">${occ} of ${tot} rooms</div></div>
+    <div><div class="k">Arrivals</div><div class="v">${arr}</div><div class="sub">${d.counters?d.counters.checkinRooms+" checked in · "+d.counters.walkinRooms+" walk-in":d.arrivals.reduce((a,x)=>a+(x.pax||0),0)+" pax expected"}</div></div>
+    <div><div class="k">Departures</div><div class="v">${dep}</div><div class="sub">${d.counters?d.counters.inhouseRooms+" rooms / "+d.counters.inhouseGuests+" guests in-house":d.departures.filter(x=>x.bal>0).length+" with balance"}</div></div>
+    <div><div class="k">Revenue today</div><div class="v" style="font-size:26px;margin-top:10px">${inr(revT)}</div><div class="sub">rooms + F&amp;B + banquet</div></div>`;
+
+  /* ghat */
+  const order=[["occ","--occ"],["vac","--vac"],["dirty","--dirty"],["blocked","--blocked"],["ooo","--ooo"]];
+  $("#ghat").innerHTML=order.map(([s,c])=>`<i style="width:${cnt(s)/tot*100}%;background:var(${c})" title="${s} ${cnt(s)}"></i>`).join("");
+  $("#roomsMeta").textContent=`${cnt("vac")} sellable · ${cnt("dirty")} dirty · ${cnt("ooo")} OOO`;
+  $("#floors").innerHTML=d.rooms.floors.map(f=>`
+    <div class="floor"><div class="fl">${f.name}</div><div class="rooms">${f.rooms.map(r=>
+      `<div class="room ${r.status}${r.arr?" arr":""}${r.dep?" dep":""}" title="${r.no} ${r.guest||r.status}"><b>${r.no}</b><s>${(r.guest||r.status).slice(0,8)}</s></div>`).join("")}</div></div>`).join("");
+
+  /* arrivals/departures */
+  $("#adMeta").textContent=`${arr} in · ${dep} out`;
+  $("#adList").innerHTML=
+    d.arrivals.map(a=>`<div class="row"><div class="t">${a.guest}<span class="tag ok">in</span></div><div class="amt">${inr(a.rate)}/n</div><div class="d">Rm ${a.room} · ${a.pax} pax · ${a.nights}N · ${a.src} · ETA ${a.eta}</div></div>`).join("")+
+    d.departures.map(x=>`<div class="row"><div class="t">${x.guest}<span class="tag bad">out</span>${x.bal>0?`<span class="tag warn">balance</span>`:""}</div><div class="amt">${x.bal>0?inr(x.bal):"settled"}</div><div class="d">Rm ${x.room}</div></div>`).join("");
+
+  /* banquets */
+  const bqs=[...d.banquets].sort((a,b)=>a.date.localeCompare(b.date));
+  $("#bqMeta").textContent=`${bqs.length} events · ${inr(bqs.reduce((a,x)=>a+x.value,0))} booked`;
+  $("#bq").innerHTML=bqs.length?bqs.map(b=>{const dt=new Date(b.date+"T00:00");return `
+    <div class="bqd"><div class="dt">${dt.toLocaleString("en-IN",{month:"short"})}<b>${dt.getDate()}</b>${dt.toLocaleString("en-IN",{weekday:"short"})}</div>
+    <div class="ev ${b.status==="tentative"?"tent":""}"><div class="t">${b.event}<span class="tag ${b.status==="tentative"?"warn":"silk"}">${b.status}</span></div>
+    <div class="d">${b.hall} · ${b.pax} pax · ${b.time} · ${b.menu}</div><div class="amt">${inr(b.value)}</div></div></div>`}).join(""):`<div class="empty">No banquet feed yet — populates from FortuneNext Banquets once the bridge runs</div>`;
+
+  /* pos */
+  const posCard=p=>{const mx=Math.max(...p.hourly,1),h=new Date().getHours();return `
+    <div class="card"><h3>${p.name}</h3><div class="big">${inr(p.sale)}</div>
+    <div class="row2"><span>${p.covers} covers</span><span>${p.openBills} open bills</span><span>avg ${inr(p.avgCheck)}</span></div>
+    <div class="spark">${p.hourly.map((v,i)=>`<i style="height:${v/mx*100}%" class="${i===h?"now":""}" title="${i}:00 · ${v}"></i>`).join("")}</div>
+    <ul>${p.top.map(([n,q])=>`<li><span>${n}</span><span>×${q}</span></li>`).join("")}</ul></div>`};
+  $("#posMeta").textContent=`F&B ${inr(d.pos.restaurant.sale+d.pos.bar.sale)} today`;
+  $("#pos").innerHTML=(d.pos.restaurant.sale||d.pos.bar.sale)?posCard(d.pos.restaurant)+posCard(d.pos.bar):`<div class="empty" style="grid-column:1/-1">No POS feed yet — populates from FortuneNext POS (restaurant + bar) once the bridge runs</div>`;
+
+  /* revenue */
+  const revAny=Object.values(d.revenue).some(v=>v.today||v.prev);
+  $("#rev").innerHTML=!revAny?`<div class="empty" style="grid-column:1/-1">Revenue populates from Day-End / Night Audit once the bridge runs</div>`:Object.entries(d.revenue).map(([k,v])=>{const p=pct(v.today,v.prev);return `
+    <div><div class="k">${k==="fnb"?"F&B":k}</div><div class="v">${inr(v.today)}</div>
+    <div class="c ${p===null?"":p>=0?"up":"dn"}">${p===null?"new":(p>=0?"▲ ":"▼ ")+Math.abs(p)+"%"}</div></div>`}).join("");
+}
+
+/* ---------- feed ---------- */
+async function load(){
+  const url=store.get("mp.feed");
+  if(!url){render(SAMPLE);return}
+  $("#srcLabel").textContent="Loading…";
+  try{
+    const h={};const t=store.get("mp.tok");if(t)h.Authorization=t;
+    const r=await fetch(url,{headers:h,cache:"no-store"});
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json(); d.source=d.source||"feed"; render(d);
+  }catch(e){
+    render(SAMPLE);$("#dot").className="dot bad";$("#srcLabel").textContent="Feed error · showing sample";
+  }
+}
+$("#btnRefresh").onclick=load;
+$("#btnSetup").onclick=()=>{$("#feedUrl").value=store.get("mp.feed")||"";$("#feedTok").value=store.get("mp.tok")||"";$("#dlg").showModal()};
+$("#dlgClose").onclick=()=>$("#dlg").close();
+$("#dlgSave").onclick=()=>{store.set("mp.feed",$("#feedUrl").value.trim());store.set("mp.tok",$("#feedTok").value.trim());$("#dlg").close();load()};
+$("#shape").textContent=SHAPE;
+load(); setInterval(load,5*60*1000);
+</script>
+</body>
+</html>
