@@ -1,0 +1,84 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Madhuvan Palace — Everything</title>
+<style>
+:root{--ink:#14100E;--ink2:#1E1814;--line:#3A2F27;--silk:#C9A227;--cream:#F3E9D2;--mist:#A99B87}
+*{box-sizing:border-box}body{background:var(--ink);color:var(--cream);font-family:-apple-system,system-ui,sans-serif;margin:0;padding:20px 16px 60px;max-width:720px;margin:0 auto;line-height:1.55}
+h1{font-size:24px;border-bottom:1px solid var(--line);padding-bottom:12px}
+h2{color:var(--silk);font-size:16px;text-transform:uppercase;letter-spacing:.06em;margin-top:28px;border-left:3px solid var(--silk);padding-left:10px}
+a{color:var(--silk)}
+.card{background:var(--ink2);border:1px solid var(--line);padding:14px;margin-top:10px;border-radius:4px}
+.big{display:block;background:var(--silk);color:var(--ink);text-align:center;padding:14px;border-radius:4px;font-weight:700;text-decoration:none;margin-top:8px}
+pre{background:#0d0a08;border:1px solid var(--line);padding:12px;white-space:pre-wrap;font-size:13px;overflow-x:auto}
+.tag{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--silk);color:var(--silk);padding:2px 8px;border-radius:20px;margin-bottom:6px}
+ol,ul{padding-left:20px}
+li{margin-bottom:6px}
+</style></head><body>
+
+<h1>Hotel Madhuvan Palace — Ops Hub</h1>
+<p style="color:var(--mist);font-size:13px">Everything in one place. Bookmark this page.</p>
+
+<h2>Dashboard</h2>
+<div class="card">
+<a class="big" href="https://shivee999.github.io/madhuvan-ops/">Open live dashboard</a>
+<p style="font-size:13px;color:var(--mist);margin-top:8px">On iPhone: Safari &rarr; Share &rarr; Add to Home Screen, so it opens full-screen like an app.</p>
+</div>
+
+<h2>System confirmed</h2>
+<div class="card">
+FortuneNext 7.0 Rev 008.165 &middot; Client Code 7237 &middot; SQL Server <code>IDS-SERVER\IDSPMS</code> &middot; Database <code>NEXT65</code> &middot; Front desk PC, user Vivek Singh
+</div>
+
+<h2>Blocker 1 &mdash; IDS SQL access <span class="tag">send on WhatsApp</span></h2>
+<div class="card">
+Send to IDS support: <a href="https://wa.me/918748881117">+91 874 888 1117</a>
+<pre>Hotel Madhuvan Palace, Varanasi - Client Code 7237, FortuneNext 7.0 Rev 008.165. Please (1) create a read-only SQL Server login on database NEXT65 (IDS-SERVER\IDSPMS) for owner reporting, (2) confirm table/view names for room status, arrivals/departures, banquet functions, POS bills, daily revenue, (3) confirm if FX Pulze (iOS) can be enabled on our licence and cost.</pre>
+<a class="big" href="https://wa.me/918748881117?text=Hotel%20Madhuvan%20Palace%2C%20Varanasi%20-%20Client%20Code%207237%2C%20FortuneNext%207.0%20Rev%20008.165.%20Please%20(1)%20create%20a%20read-only%20SQL%20Server%20login%20on%20database%20NEXT65%20(IDS-SERVER%5CIDSPMS)%20for%20owner%20reporting%2C%20(2)%20confirm%20table%2Fview%20names%20for%20room%20status%2C%20arrivals%2Fdepartures%2C%20banquet%20functions%2C%20POS%20bills%2C%20daily%20revenue%2C%20(3)%20confirm%20if%20FX%20Pulze%20(iOS)%20can%20be%20enabled%20on%20our%20licence%20and%20cost.">Open WhatsApp with message pre-filled</a>
+</div>
+
+<h2>Blocker 2 &mdash; WhatsApp Business sender <span class="tag">Meta, one-time</span></h2>
+<div class="card">
+<ol>
+<li><a href="https://business.facebook.com">business.facebook.com</a> &rarr; WhatsApp Manager &rarr; Add phone number (use a spare number, not your personal WhatsApp)</li>
+<li>Business Profile &rarr; Name &rarr; <b>Hotel Madhuvan Palace</b> (this becomes the chat name on your phone)</li>
+<li>API Setup &rarr; copy Phone Number ID + generate Permanent Access Token (System User)</li>
+<li>Message Templates &rarr; Create &rarr; name <code>daily_sales_madhuvan</code>, category <b>Utility</b>, language English, body:
+<pre>Hotel Madhuvan Palace - Daily Sales, {{1}}
+Rooms: {{2}}
+Restaurant: {{3}}
+Bar: {{4}}
+Banquet: {{5}}
+Total: {{6}}</pre>
+Submit for review.</li>
+<li>In n8n set: <code>WA_PHONE_NUMBER_ID</code>, <code>WA_OWNER_NUMBER=918707546331</code>, and the access token as Header Auth on the "Send WhatsApp" node</li>
+</ol>
+</div>
+
+<h2>Sample nightly message (21:30 IST, once live)</h2>
+<div class="card">
+<pre>Hotel Madhuvan Palace - Daily Sales, 16 Aug 2026
+Rooms: Rs 78,400 (11/26 rooms, 42%)
+Restaurant: Rs 41,800
+Bar: Rs 18,600
+Banquet: Rs 1,85,000 - Ganga Hall: Tilak, Srivastava (180 pax)
+Total: Rs 3,23,800</pre>
+</div>
+
+<h2>Build files (import into n8n)</h2>
+<div class="card">
+n8n: <a href="https://bettercallwrld.app.n8n.cloud">bettercallwrld.app.n8n.cloud</a>
+<ul>
+<li><b>1_discover.py</b> &mdash; run on the hotel PC first, maps FortuneNext's real table names</li>
+<li><b>2_bridge.py</b> &mdash; runs on the hotel PC once SQL login is granted, pushes real numbers every 5 min</li>
+<li><b>n8n_workflow.json</b> &mdash; serves the live feed to the dashboard</li>
+<li><b>3_whatsapp_daily.json</b> &mdash; sends the nightly sales WhatsApp, needs Blocker 2 cleared first</li>
+</ul>
+<p style="color:var(--mist);font-size:13px">These were shared as files in chat &mdash; pull them from your Claude conversation's Files if you don't have them saved.</p>
+</div>
+
+<h2>Status, honestly</h2>
+<div class="card">
+Nothing auto-sends to WhatsApp yet &mdash; Meta hasn't approved a sender, so there's no live channel. Both blockers above need action from you (IDS support reply, Meta approval); no automation can push through either one. The moment they clear, the bridge and the nightly WhatsApp start running themselves.
+</div>
+
+</body></html>
