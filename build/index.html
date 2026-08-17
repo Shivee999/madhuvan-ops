@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#100D0A">
+<title>Build Status · Shive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#100D0A; --ink2:#191410; --ink3:#221B15; --line:#382C22;
+  --gold:#C9A227; --brass:#8F6E1E; --cream:#F3E9D2; --mist:#A99B87;
+  --ok:#5F9C6B; --warn:#D28B2C; --bad:#C24A3A; --blue:#4E6B8C;
+  --disp:"Cormorant Garamond",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding:calc(env(safe-area-inset-top) + 18px) 18px 60px;max-width:1180px;margin:0 auto}
+a{color:var(--gold)}
+
+/* header */
+header{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+h1{font-family:var(--disp);font-size:38px;font-weight:600;margin-top:6px;line-height:1.05}
+h1 em{font-style:italic;color:var(--gold)}
+.dateline{font-family:var(--mono);font-size:11px;color:var(--mist);margin-top:8px}
+
+/* totals strip */
+.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:36px}
+.totals>div{background:var(--ink2);padding:16px 14px}
+.totals .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.totals .v{font-family:var(--disp);font-size:30px;font-weight:600;margin-top:6px;line-height:1}
+.totals .s{font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:5px}
+
+/* section nav */
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:30px}
+.nav a{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);color:var(--mist);padding:6px 10px;text-decoration:none}
+.nav a:hover{color:var(--gold);border-color:var(--brass)}
+
+/* system group */
+.group{margin-bottom:44px}
+.gh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-left:3px solid var(--gold);padding-left:14px;margin-bottom:16px}
+.gh h2{font-family:var(--disp);font-size:26px;font-weight:600}
+.gh .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist)}
+
+/* card */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.card{background:var(--ink2);padding:16px;display:flex;flex-direction:column;gap:10px}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card h3{font-family:var(--disp);font-size:19px;font-weight:600;line-height:1.15}
+.status{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border:1px solid;white-space:nowrap}
+.status.built{color:var(--ok);border-color:var(--ok)}
+.status.blocked{color:var(--warn);border-color:var(--warn)}
+.status.wait{color:var(--blue);border-color:var(--blue)}
+.card p{font-size:12.5px;color:var(--mist);line-height:1.55}
+.card .help{font-size:12.5px;color:var(--cream);line-height:1.5;border-top:1px solid var(--line);padding-top:9px}
+.card .help b{color:var(--gold);font-weight:500}
+.meta{display:flex;gap:14px;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
+.meta div{flex:1}
+.meta .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist)}
+.meta .v{font-family:var(--mono);font-size:12px;margin-top:3px}
+.meta .v.cost{color:var(--gold)}
+.meta .v.time{color:var(--cream)}
+.card .files{font-family:var(--mono);font-size:10px;color:var(--mist);background:var(--ink);padding:6px 8px;border:1px solid var(--line)}
+
+/* cost table */
+.costtable{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.costtable th{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.costtable td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.costtable tr:last-child td{border-bottom:none}
+.costtable .item{font-weight:500}
+.costtable .note{color:var(--mist);font-size:11px}
+.costtable .amt{font-family:var(--mono);color:var(--gold);white-space:nowrap}
+.costtable .amt.free{color:var(--ok)}
+.foot-total{background:var(--ink3);font-weight:600}
+.foot-total td{border-bottom:none;padding-top:12px}
+
+/* honesty box */
+.honest{background:var(--ink3);border:1px solid var(--brass);border-left:3px solid var(--gold);padding:16px;margin-top:14px;font-size:12.5px;color:var(--mist);line-height:1.6}
+.honest b{color:var(--cream)}
+.honest .src{font-family:var(--mono);font-size:9px;color:var(--mist);margin-top:8px;display:block}
+
+/* links row */
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.links a{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--brass);color:var(--gold);padding:6px 10px;text-decoration:none}
+
+footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10px;color:var(--mist);text-align:center}
+
+@media(max-width:640px){
+  .totals{grid-template-columns:repeat(2,1fr)}
+  h1{font-size:30px}
+  .costtable{font-size:11px}
+  .costtable th:nth-child(3),.costtable td:nth-child(3){display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Shivendra Singh · build log</div>
+  <h1>What's <em>actually</em> built</h1>
+  <div class="dateline">Compiled 18 Aug 2026 · covers Hotel Madhuvan Palace ops + WhatsApp automation suite</div>
+</header>
+
+<div class="totals">
+  <div><div class="k">Systems built</div><div class="v">8</div><div class="s">deployed or file-ready</div></div>
+  <div><div class="k">Live now</div><div class="v">2</div><div class="s">dashboard + ops hub, on your phone today</div></div>
+  <div><div class="k">Run cost/mo</div><div class="v">$0–12<span style="font-family:var(--mono);font-size:11px;color:var(--mist)"> est.</span></div><div class="s">at low volume, excl. Meta message fees</div></div>
+  <div><div class="k">Your remaining time</div><div class="v">~1 hr</div><div class="s">across all one-time setup steps</div></div>
+</div>
+
+<div class="nav">
+  <a href="#ops">Hotel ops</a><a href="#wa">WhatsApp core</a><a href="#types">Business-type bots</a><a href="#cost">Full cost table</a><a href="#honest">Honest notes</a>
+</div>
+
+<div class="group" id="ops">
+  <div class="gh"><h2>Hotel Madhuvan Palace — Ops</h2><span class="tag">2 files · 1 live</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><h3>Owner dashboard</h3><span class="status built">Live</span></div>
+      <p>Room grid by floor, arrivals/departures, banquet timeline, restaurant + bar POS, revenue vs last week. Real FortuneNext counters where photographed; placeholders elsewhere.</p>
+      <div class="help">Helps: <b>one glance, phone or laptop, for the whole hotel</b> instead of walking to front desk or calling.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">Free</div></div><div><div class="k">Setup left</div><div class="v time">0 min</div></div></div>
+      <div class="files">shivee999.github.io/madhuvan-ops/</div>
+    </div>
+    <div class="card">
+      <div class="top"><h3>SQL bridge (PMS → dashboard)</h3><span class="status blocked">Waiting on IDS</span></div>
+      <p>Scripts that pull real rooms/banquet/POS/revenue from FortuneNext's SQL Server every 5 min and feed the dashboard live.</p>
+      <div class="help">Helps: turns the dashboard from a mockup into <b>real numbers, automatically</b>.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">Free</div></div><div><div class="k">Setup left</div><div class="v time">~30 min once IDS replies</div></div></div>
+      <div class="files">1_discover.py · 2_bridge.py · n8n_workflow.json</div>
+    </div>
+  </div>
+</div>
+
+<div class="group" id="wa">
+  <div class="gh"><h2>WhatsApp core</h2><span class="tag">2 files · needs Meta AI off</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><h3>Nightly sales report</h3><span class="status wait">File ready</span></div>
+      <p>21:30 IST every night: rooms, restaurant, bar, banquet, total — one WhatsApp message, sender name "Hotel Madhuvan Palace".</p>
+      <div class="help">Helps: <b>you never open the dashboard to know the day's number</b> — it finds you.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">~₹0.3–1/msg*</div></div><div><div class="k">Setup left</div><div class="v time">~15 min + Meta approval</div></div></div>
+      <div class="files">3_whatsapp_daily.json</div>
+    </div>
+    <div class="card">
+      <div class="top"><h3>AI concierge</h3><span class="status wait">File ready</span></div>
+      <p>Guests message the hotel number, Claude answers from hotel facts (rooms/rates/banquet/timings). Complaints skip the AI, alert you directly.</p>
+      <div class="help">Helps: <b>answers guest questions at 2am</b> without waking front desk.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">~$0.002/msg</div></div><div><div class="k">Setup left</div><div class="v time">~20 min</div></div></div>
+      <div class="files">4_whatsapp_ai_concierge.json</div>
+    </div>
+  </div>
+</div>
+
+<div class="group" id="types">
+  <div class="gh"><h2>Business-type automation templates</h2><span class="tag">4 files · DreamKey resale kit</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><h3>Type 1 — Hospitality</h3><span class="status wait">File ready</span></div>
+      <p>Single-turn Q&amp;A, stateless. Same engine as the concierge above — this is the reusable template version.</p>
+      <div class="help">Sells to: <b>hotels, resorts, homestays</b>.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">~$0.002/msg</div></div><div><div class="k">Setup left</div><div class="v time">~20 min</div></div></div>
+      <div class="files">type1-hospitality-concierge.json</div>
+    </div>
+    <div class="card">
+      <div class="top"><h3>Type 2 — QSR ordering</h3><span class="status wait">File ready</span></div>
+      <p>Stateful cart per number, WhatsApp list menu, Razorpay payment link, kitchen-group ticket on payment. Zero AI, pure flow.</p>
+      <div class="help">Sells to: <b>restaurants, cloud kitchens, QSRs</b> (built for WING'D first).</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">Razorpay ~2%/txn*</div></div><div><div class="k">Setup left</div><div class="v time">~25 min</div></div></div>
+      <div class="files">type2-qsr-ordering.json</div>
+    </div>
+    <div class="card">
+      <div class="top"><h3>Type 3 — Real estate funnel</h3><span class="status wait">File ready</span></div>
+      <p>Scripted budget → location → timeline funnel, auto-scores hot vs. cold, pushes to HubSpot, sends booking link to hot leads only.</p>
+      <div class="help">Sells to: <b>real estate agents/brokers</b> — DreamKey's core client type.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">HubSpot: existing plan</div></div><div><div class="k">Setup left</div><div class="v time">~30 min</div></div></div>
+      <div class="files">type3-realestate-leadqual.json</div>
+    </div>
+    <div class="card">
+      <div class="top"><h3>Type 4 — Pet store support</h3><span class="status wait">File ready</span></div>
+      <p>Order-status lookup live against Shopify + daily 10am scan for customers due a reorder (dog food ~28d, litter ~21d), auto-nudge with discount.</p>
+      <div class="help">Sells to: <b>pet product e-commerce</b> — DreamKey's other core client type.</div>
+      <div class="meta"><div><div class="k">Cost</div><div class="v cost">Shopify: existing plan</div></div><div><div class="k">Setup left</div><div class="v time">~30 min</div></div></div>
+      <div class="files">type4-petcommerce-support.json</div>
+    </div>
+  </div>
+</div>
+
+<div class="group" id="cost">
+  <div class="gh"><h2>Full cost breakdown</h2><span class="tag">estimates, verify before committing</span></div>
+  <table class="costtable">
+    <tr><th>Item</th><th>Est. cost</th><th>Note</th></tr>
+    <tr><td class="item">GitHub Pages hosting (dashboard, ops hub)</td><td class="amt free">Free</td><td class="note">Already live</td></tr>
+    <tr><td class="item">n8n workflow runs</td><td class="amt free">$0 extra</td><td class="note">You already run n8n at bettercallwrld.app.n8n.cloud — cost depends on your existing plan, not added by this build</td></tr>
+    <tr><td class="item">Claude API — concierge / hospitality bot</td><td class="amt">≈$0.002–0.003 / guest message</td><td class="note">Sonnet 5, $2/$10 per million tokens through 31 Aug 2026, then $3/$15 from 1 Sep. ~250 in + ~150 out tokens per reply. At 100 msgs/month: under $1.</td></tr>
+    <tr><td class="item">Evolution API hosting (self-hosted WhatsApp gateway)</td><td class="amt">≈$5–10/mo</td><td class="note">Small VPS/Railway instance to run it 24/7 — rough estimate, verify against your host's current pricing</td></tr>
+    <tr><td class="item">WhatsApp Business Platform message fees (official Cloud API path)</td><td class="amt">Unverified</td><td class="note">Meta prices per-conversation, varies by country/category and changes over time — I don't have a reliable current India rate, check business.facebook.com/whatsapp pricing directly</td></tr>
+    <tr><td class="item">Razorpay transaction fee (Type 2 payment links)</td><td class="amt">≈2% + GST / txn</td><td class="note">Commonly cited standard India rate — verify on your Razorpay dashboard, it varies by plan/volume</td></tr>
+    <tr><td class="item">HubSpot API usage (Type 3)</td><td class="amt free">Existing plan</td><td class="note">You already have HubSpot connected — no new cost unless you exceed your current tier's API limits</td></tr>
+    <tr><td class="item">Shopify API usage (Type 4)</td><td class="amt free">Existing plan</td><td class="note">Same — only relevant once you or a client has a live Shopify store on this flow</td></tr>
+    <tr><td class="item">IDS Next — read-only SQL access</td><td class="amt free">Expected free</td><td class="note">Standard part of an existing licence; FX Pulze (iOS app) cost unconfirmed — ask IDS</td></tr>
+    <tr class="foot-total"><td>Rough monthly run cost, low volume (1 hotel, &lt;200 guest msgs/mo)</td><td class="amt">$5–15</td><td class="note">Excludes unverified Meta message fees</td></tr>
+  </table>
+</div>
+
+<div class="honest" id="honest">
+  <b>What I'm sure of vs. not:</b> Claude API pricing above is sourced from Anthropic's current published rates, cited in this reply. Evolution API hosting and Razorpay's percentage are typical ballpark figures I'm not 100% certain still match current rates — verify both before budgeting. Meta's official WhatsApp message fees I genuinely don't have a reliable current number for; their pricing is region- and category-specific and I won't guess at it. Time estimates are step-count based, not measured — could run faster or slower depending on how each service's setup UI behaves the day you do it.
+  <span class="src">Sources: Anthropic Claude API pricing docs (platform.claude.com/docs/en/about-claude/pricing); Meta for Developers, WhatsApp Business Platform docs — checked 18 Aug 2026.</span>
+</div>
+
+<div class="links">
+  <a href="https://shivee999.github.io/madhuvan-ops/">Ops dashboard</a>
+  <a href="https://shivee999.github.io/madhuvan-ops/everything/">Everything hub</a>
+  <a href="https://github.com/Shivee999/madhuvan-ops">GitHub repo</a>
+</div>
+
+<footer>Built with Claude · this page itself lives at shivee999.github.io/madhuvan-ops/build/</footer>
+
+</body>
+</html>
